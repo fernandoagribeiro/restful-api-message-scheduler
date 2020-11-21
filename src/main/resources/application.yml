@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/luiza_labs_exam_db
+    username: luiza_labs
+    password: luizalabs
+  jpa:
+    hibernate.ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: luiza_labs_exam
