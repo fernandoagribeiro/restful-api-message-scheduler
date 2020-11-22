@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Table(name = "scheduled_message")
 public class ScheduledMessage {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "luiza_labs_exam.scheduled_message_id_seq")
     @Column(name = "id")
     private long id;
 

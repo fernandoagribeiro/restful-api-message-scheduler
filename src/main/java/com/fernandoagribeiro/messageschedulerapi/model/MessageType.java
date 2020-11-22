@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 @DiscriminatorColumn(name = "message_type")
 public abstract class MessageType {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "luiza_labs_exam.message_type_id_seq")
     @Column(name = "id")
     private int messageTypeId;
 
