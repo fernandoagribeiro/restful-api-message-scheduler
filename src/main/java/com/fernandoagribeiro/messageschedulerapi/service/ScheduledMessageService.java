@@ -35,6 +35,8 @@ public class ScheduledMessageService {
                 throw new IllegalArgumentException("The Message Type " + scheduledMessage.getMessageType().getMessageTypeName() +
                         " was not found");
 
+            scheduledMessage.setMessageType(messageType.get());
+
             log.info("Validating the Scheduled Message");
             scheduledMessage.validate();
 

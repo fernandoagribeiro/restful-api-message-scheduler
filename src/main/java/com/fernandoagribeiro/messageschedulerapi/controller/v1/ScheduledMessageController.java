@@ -2,9 +2,10 @@ package com.fernandoagribeiro.messageschedulerapi.controller.v1;
 
 import com.fernandoagribeiro.messageschedulerapi.DTO.ScheduledMessageDTO;
 import com.fernandoagribeiro.messageschedulerapi.DTO.StandardResponseDTO;
+import com.fernandoagribeiro.messageschedulerapi.enumeration.MessageTypeEnum;
+import com.fernandoagribeiro.messageschedulerapi.factory.MessageTypeFactory;
 import com.fernandoagribeiro.messageschedulerapi.mapping.ScheduledMessageMapper;
 import com.fernandoagribeiro.messageschedulerapi.model.ScheduledMessage;
-import com.fernandoagribeiro.messageschedulerapi.service.MessageTypeService;
 import com.fernandoagribeiro.messageschedulerapi.service.ScheduledMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +22,12 @@ import java.time.LocalDateTime;
 public class ScheduledMessageController {
 
     private final ScheduledMessageService scheduledMessageService;
-    private final MessageTypeService messageTypeService;
+    private MessageTypeFactory messageTypeFactory;
 
     @Autowired
-    public ScheduledMessageController(ScheduledMessageService scheduledMessageService, MessageTypeService messageTypeService) {
+    public ScheduledMessageController(ScheduledMessageService scheduledMessageService, MessageTypeFactory messageTypeFactory) {
         this.scheduledMessageService = scheduledMessageService;
-        this.messageTypeService = messageTypeService;
+        this.messageTypeFactory = messageTypeFactory;
     }
 
     private void validateMessageDTO(ScheduledMessageDTO scheduledMessageDTO) throws IllegalArgumentException {
@@ -44,10 +45,8 @@ public class ScheduledMessageController {
     @ResponseBody
     public ResponseEntity<StandardResponseDTO> create(@RequestBody @Valid ScheduledMessageDTO scheduledMessageDTO) {
         try {
-            log.info("Ensuring that the Message Type " + scheduledMessageDTO.getMessageTypeName() + " exists on the DB");
-            var messageType = messageTypeService.findByMessageTypeName(scheduledMessageDTO.getMessageTypeName());
-
-            if (!messageType.isPresent()) {
+            log.info("Ensuring that the chosen Message Type " + scheduledMessageDTO.getMessageTypeName() + " exists");
+            if (!MessageTypeEnum.contains(scheduledMessageDTO.getMessageTypeName())) {
                 var errorMessage = "The Message Type " + scheduledMessageDTO.getMessageTypeName() + " was not found";
 
                 log.error(errorMessage);
@@ -59,21 +58,23 @@ public class ScheduledMessageController {
             this.validateMessageDTO(scheduledMessageDTO);
             log.info("The Scheduled Message is valid");
 
+            log.info("Instantiating a Message Type");
+            var messageType = messageTypeFactory.findMessageType(MessageTypeEnum.valueOf(
+                    scheduledMessageDTO.getMessageTypeName()));
+
             log.info("Converting the object DTO into the persistence model");
             ScheduledMessage scheduledMessage = ScheduledMessageMapper.INSTANCE.toScheduledMessage(scheduledMessageDTO);
-            scheduledMessage.setMessageType(messageType.get());
+            scheduledMessage.setMessageType(messageType);
 
             this.scheduledMessageService.save(scheduledMessage);
 
             var successMessage = "Scheduled Message successfully saved";
             log.info(successMessage);
             return ResponseEntity.ok().body(new StandardResponseDTO(successMessage, null));
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             log.error(e.getMessage());
-            return ResponseEntity.badRequest().body(new StandardResponseDTO(e.getMessage(),null));
-        }
-        catch (Exception e) {
+            return ResponseEntity.badRequest().body(new StandardResponseDTO(e.getMessage(), null));
+        } catch (Exception e) {
             log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new StandardResponseDTO(e.getMessage(),
                     null));
@@ -102,12 +103,10 @@ public class ScheduledMessageController {
 
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new StandardResponseDTO(errorMessage, null));
             }
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             log.error(e.getMessage());
-            return ResponseEntity.badRequest().body(new StandardResponseDTO(e.getMessage(),null));
-        }
-        catch (Exception e) {
+            return ResponseEntity.badRequest().body(new StandardResponseDTO(e.getMessage(), null));
+        } catch (Exception e) {
             log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new StandardResponseDTO(e.getMessage(),
                     null));
@@ -127,12 +126,10 @@ public class ScheduledMessageController {
             var successMessage = "The Scheduled Message was successfully deleted";
             log.info(successMessage);
             return ResponseEntity.ok().body(new StandardResponseDTO(successMessage, null));
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             log.error(e.getMessage());
-            return ResponseEntity.badRequest().body(new StandardResponseDTO(e.getMessage(),null));
-        }
-        catch (Exception e) {
+            return ResponseEntity.badRequest().body(new StandardResponseDTO(e.getMessage(), null));
+        } catch (Exception e) {
             log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new StandardResponseDTO(e.getMessage(),
                     null));
