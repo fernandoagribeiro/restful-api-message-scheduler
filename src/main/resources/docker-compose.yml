@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  test-postgres-compose:
+    image: postgres
+    environment:
+      - POSTGRES_DB=luiza_labs_exam_db
+      - POSTGRES_USER=luiza_labs
+      - POSTGRES_PASSWORD=luizalabs
+    ports:
+      - "5432:5432"
+#    networks:
+#      - postgres-compose-network
+
+#networks:
+#  postgres-compose-network:
+#    driver: bridge
