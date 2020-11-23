@@ -2,17 +2,17 @@
 This repository contains the Java source code for a Restful API that has endpoints to create, list, and delete messages,
 where these messages should be sent by a different application when their scheduled date arrives.
 
-##Maven
+## Maven
 This project uses Maven in order to manage its packages and plugins.
 
-##Lombok
+## Lombok
 This project uses Lombok as a way to decrease the need for boiler plate code.
 It's necessary to install the Lombok plugin on your IDE if you want to run this project.
 - Click [here](https://projectlombok.org/setup/eclipse) to acquire Lombok for Eclipse
 - Click [here](https://projectlombok.org/setup/intellij) to acquire Lombok for IntelliJ IDEA
 - Click [here](https://projectlombok.org/setup/netbeans) to acquire Lombok for Netbeans
 
-##Docker
+## Docker
 As this application was designed to operate with Postgres databases, in order to avoid the need to have an installation
 of Postgres, it's possible to run a docker-compose command that will run an image of a Postgres DB.
 To do that, first ensure that you have Docker installed and running on your machine.
@@ -46,7 +46,7 @@ To execute unit tests:
 mvn test
 ```
 
-##Jacoco
+## Jacoco
 
 Unfortunately, I've created only a few Unit Tests as I had tons of trouble to make Maven recognize my UTs.
 In order to see how much my code is covered by Unit Testing (much less than I'd like), you can run the following command:
