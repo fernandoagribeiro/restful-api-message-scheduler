@@ -20,8 +20,7 @@ public class ScheduledMessageDTO {
     @Size(max = 600)
     private String messageContent;
 
-    @NotBlank(message = "")
-    //TODO: Create a enum and try to instantiate based on the enum
+    @NotBlank(message = "It's mandatory to inform the content of the message")
     private String messageTypeName;
 
     @NotBlank(message = "It's mandatory to inform the message's recipient")
