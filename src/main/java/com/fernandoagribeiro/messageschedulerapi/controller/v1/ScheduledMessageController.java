@@ -66,11 +66,13 @@ public class ScheduledMessageController {
             ScheduledMessage scheduledMessage = ScheduledMessageMapper.INSTANCE.toScheduledMessage(scheduledMessageDTO);
             scheduledMessage.setMessageType(messageType);
 
-            this.scheduledMessageService.save(scheduledMessage);
+            var newScheduleMessage = this.scheduledMessageService.save(scheduledMessage);
 
             var successMessage = "Scheduled Message successfully saved";
             log.info(successMessage);
-            return ResponseEntity.ok().body(new StandardResponseDTO(successMessage, null));
+
+            return ResponseEntity.ok().body(new StandardResponseDTO(successMessage,
+                ScheduledMessageMapper.INSTANCE.toDTO(newScheduleMessage, scheduledMessage.getMessageType())));
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());
             return ResponseEntity.badRequest().body(new StandardResponseDTO(e.getMessage(), null));
@@ -88,7 +90,7 @@ public class ScheduledMessageController {
             if (id < 1)
                 throw new IllegalArgumentException("The Scheduled Message Id should be higher than zero");
 
-            var scheduledMessage = scheduledMessageService.findScheduledMessageById(id);
+            var scheduledMessage = scheduledMessageService.findById(id);
 
             if (scheduledMessage.isPresent()) {
                 log.info("A Scheduled Message was found and it will now be converted to its DTO equivalent");

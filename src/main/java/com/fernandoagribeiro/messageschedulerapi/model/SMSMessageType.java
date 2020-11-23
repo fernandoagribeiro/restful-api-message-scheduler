@@ -5,8 +5,6 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Entity(name = "SMS")
 @DiscriminatorValue("SMS")

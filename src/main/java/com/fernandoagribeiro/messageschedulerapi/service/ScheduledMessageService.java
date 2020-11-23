@@ -23,7 +23,7 @@ public class ScheduledMessageService {
         this.messageTypeRepository = messageTypeRepository;
     }
 
-    public void save(@NonNull ScheduledMessage scheduledMessage) {
+    public ScheduledMessage save(@NonNull ScheduledMessage scheduledMessage) {
         try {
             if (scheduledMessage.getMessageType() == null)
                 throw new IllegalArgumentException("It's necessary to inform the Schedule Message's Type");
@@ -41,16 +41,17 @@ public class ScheduledMessageService {
             scheduledMessage.validate();
 
             log.info("The Scheduled Message is valid, preparing to save");
-            scheduledMessageRepository.save(scheduledMessage);
-
+            var newScheduledMessage = scheduledMessageRepository.save(scheduledMessage);
             log.info("Scheduled Message successfully saved");
+
+            return newScheduledMessage;
         } catch (Exception e) {
             log.error(e.getMessage());
             throw e;
         }
     }
 
-    public Optional<ScheduledMessage> findScheduledMessageById(@Min(value = 1, message = "The Scheduled Message Id should be higher than zero") long id) {
+    public Optional<ScheduledMessage> findById(@Min(value = 1, message = "The Scheduled Message Id should be higher than zero") long id) {
         try {
             log.info("Searching for a Scheduled Message with the Id " + id);
 
